@@ -87,4 +87,4 @@ class Controller(object):
                 self.index[real.id] = real
 
             if self.index:
-                self.max_id = sum([r.id for r in self.index.values()])
+                self.max_id = max([r.id for r in self.index.values()])
