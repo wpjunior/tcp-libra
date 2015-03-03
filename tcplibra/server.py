@@ -9,16 +9,20 @@ from session import Session
 from api import API
 
 class Server(TCPServer):
-    mark_reavailable_real_timeout = 30 # seconds
-
-    def __init__(self, controller):
+    def __init__(self, controller, reavailable_after=30):
         super(Server, self).__init__()
 
         self.controller = controller
+        self.reavailable_after = reavailable_after
+
         self.controller.on_create(self._on_real_created)
         self.controller.on_delete(self._on_real_deleted)
 
         self.reals_sorted = self.controller.list()
+
+        for real in self.reals_sorted:
+            real.on_changed(self.on_real_changed)
+
         self.balance_reals()
 
     def _on_real_created(self, real):
@@ -59,23 +63,45 @@ class Server(TCPServer):
 
         if not real.available:
             IOLoop.instance().call_later(
-                self.mark_reavailable_real_timeout,
+                self.reavailable_after,
                 self.mark_real_available, real)
 
     def mark_real_available(self, real):
         real.available = True
 
 def run():
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description='The simple tcp load balancer written in tornado')
+
+    parser.add_argument('-p', '--port',
+                        default='4000',
+                        type=int,
+                        help='server port, default (default: 4000)')
+
+    parser.add_argument('-a', '--api-port',
+                        default='4001',
+                        type=int,
+                        help='api port, default (default: 4001)')
+
+    parser.add_argument('-r', '--reavailable-after',
+                        default='30',
+                        type=int,
+                        help='reavailable real after x seconds, default (default: 30)')
+
+    args = parser.parse_args()
+
     controller = Controller()
 
-    server = Server(controller)
-    server.listen(4000)
+    server = Server(controller, reavailable_after=args.reavailable_after)
+    server.listen(args.port)
 
-    print 'Server running at port 4000'
+    print 'Server running at port %d' % args.port
 
     api = API(server, controller)
-    api.listen(4001)
-    print 'API running at port 4001'
+    api.listen(args.api_port)
+    print 'API running at port %d' % args.api_port
 
     IOLoop.instance().start()
 
