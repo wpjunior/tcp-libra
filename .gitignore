@@ -1,0 +1,8 @@
+*.pyc
+.idea/
+build
+dist/
+libra.egg-info/
+.ropeproject/
+.coverage
+coverage.xml
