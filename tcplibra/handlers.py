@@ -5,11 +5,15 @@ import json
 
 from tornado.web import RequestHandler
 
+
 class RootHandler(RequestHandler):
+
     def get(self):
         self.redirect("/api/reals")
 
+
 class RealsHandler(RequestHandler):
+
     def get(self):
         self.set_header('Content-Type', 'application/json')
         reals = self.application.controller.list()
@@ -27,7 +31,9 @@ class RealsHandler(RequestHandler):
             self.set_header('Content-Type', 'application/json')
             self.write(real.to_json())
 
+
 class RealHandler(RequestHandler):
+
     def get(self, id):
         self.set_header('Content-Type', 'application/json')
         real = self.application.controller.get(int(1))

@@ -2,7 +2,9 @@ import socket
 from tornado.iostream import IOStream
 from tornado import gen
 
+
 class Session(object):
+
     def __init__(self, stream, address, server, real):
         print 'New session: %s:%d -> %s:%d' % (
             address[0], address[1], real.host, real.port

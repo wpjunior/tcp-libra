@@ -8,7 +8,9 @@ from controller import Controller
 from session import Session
 from api import API
 
+
 class Server(TCPServer):
+
     def __init__(self, controller, reavailable_after=30):
         super(Server, self).__init__()
 
@@ -68,6 +70,7 @@ class Server(TCPServer):
 
     def mark_real_available(self, real):
         real.available = True
+
 
 def run():
     import argparse

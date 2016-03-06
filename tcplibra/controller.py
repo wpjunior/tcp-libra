@@ -3,6 +3,7 @@ import os
 
 from models import Real
 
+
 class Controller(object):
     max_id = 0
     index = {}

@@ -19,12 +19,11 @@ class Real(object):
         }
 
     def store_format(self):
-        return  {
+        return {
             'id': self.id,
             'host': self.host,
             'port': self.port
         }
-
 
     def on_changed(self, callback):
         self.change_listenners.append(callback)
